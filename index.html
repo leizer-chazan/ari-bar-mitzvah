@@ -66,6 +66,7 @@ body.locked{overflow:hidden}
 }
 button,input,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--gold-light);outline-offset:3px}
+.card:focus{outline:none}
 
 /* ---------- sound toggle ---------- */
 .sound{position:fixed;z-index:70;top:calc(14px + env(safe-area-inset-top,0px));left:calc(14px + env(safe-area-inset-left,0px));
@@ -113,7 +114,7 @@ button,input,textarea{font:inherit;color:inherit}
 .open{font-family:var(--f-body);font-weight:700;font-size:1.12rem;color:var(--navy);background:linear-gradient(180deg,#f3e3bd,var(--gold-light));
   border:0;border-radius:999px;padding:13px 34px;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.35);transition:transform .2s ease}
 .open:hover{transform:translateY(-1px)}
-.gate.opening .open,.gate.opening .gate-meta{opacity:0;transition:opacity .4s ease}
+.gate.opening .open,.gate.opening .gate-meta,.gate.opening .gate-hint{opacity:0;transition:opacity .4s ease}
 .skip{font-size:.85rem;color:rgba(249,243,230,.7);background:none;border:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 
 /* ---------- page ---------- */
@@ -192,6 +193,15 @@ button,input,textarea{font:inherit;color:inherit}
 footer{text-align:center;color:rgba(249,243,230,.75);padding-block:6px calc(90px + env(safe-area-inset-bottom,0px));padding-left:var(--gutter-l);padding-right:var(--gutter-r);font-size:.98rem}
 footer b{color:var(--gold-light)}
 
+/* scroll cue under the card (phones) */
+.cue{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--gold-light);text-decoration:none;font-size:1rem;letter-spacing:.04em;margin-top:-8px}
+.cue svg{width:22px;height:22px}
+@media (prefers-reduced-motion:no-preference){.cue svg{animation:nudge 2s ease-in-out infinite}}
+@keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+.side,#rsvp{scroll-margin-top:16px}
+.gate-hint{margin:-12px 0 0;font-size:.88rem;color:rgba(249,243,230,.7);text-align:center}
+.done-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+
 /* sticky RSVP bar on phones */
 .bar{position:fixed;z-index:40;left:0;right:0;bottom:0;padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));padding-left:var(--gutter-l);padding-right:var(--gutter-r);
   background:linear-gradient(180deg,rgba(6,24,47,0),rgba(6,24,47,.92) 35%);display:flex;justify-content:center;transition:transform .35s ease,opacity .35s ease}
@@ -202,6 +212,7 @@ footer b{color:var(--gold-light)}
   .main{grid-template-columns:minmax(0,440px) minmax(0,440px);justify-content:center;align-items:start;gap:56px;padding-block:30px 60px}
   .side{position:sticky;top:24px}
   .bar{display:none}
+  .cue{display:none}
   footer{padding-bottom:40px}
 }
 
@@ -238,6 +249,7 @@ footer b{color:var(--gold-light)}
     <span class="d">יום רביעי · ט"ו כסלו ה'תשפ"ז · 19:30</span>
   </div>
   <button class="open" id="open" type="button">לפתיחת ההזמנה</button>
+  <p class="gate-hint">ההזמנה נפתחת עם ניגון · אפשר להשתיק בכל רגע</p>
 </div>
 
 <!-- ============ PAGE ============ -->
@@ -245,7 +257,7 @@ footer b{color:var(--gold-light)}
 <main class="main" id="main">
   <div class="cardwrap">
     <div class="arch-back" aria-hidden="true"></div>
-    <article class="card paper" aria-label="נוסח ההזמנה">
+    <article class="card paper" id="card" tabindex="-1" aria-label="נוסח ההזמנה">
       <svg class="arc" viewBox="0 0 400 200" role="img" aria-label="גמר ועיקר כניסת נפש הקדושה באדם הוא בי&quot;ג שנים ויום אחד (שו&quot;ע אדמו&quot;ר הזקן)">
         <path id="qarc" d="M 42 200 A 158 158 0 0 1 358 200" fill="none"/>
         <text class="q"><textPath href="#qarc" startOffset="50%" text-anchor="middle">"גמר ועיקר כניסת נפש הקדושה באדם הוא בי"ג שנים ויום אחד"</textPath></text>
@@ -253,7 +265,7 @@ footer b{color:var(--gold-light)}
       </svg>
       <p class="lead">בעזהי"ת</p>
       <p>אנו מודים לה' על כל הטוב אשר גמלנו,<br>ובחסדו הגדול זיכנו בחגיגת בר המצווה<br>של בננו היקר</p>
-      <div class="boy"><span class="t">הת'</span><span class="n">ארי</span><span class="t">שי'</span></div>
+      <div class="boy"><span class="t">הת'</span><span class="n">אהרן</span><span class="t">שי'</span></div>
       <p>שתתקיים אי"ה בשעה טובה ומוצלחת<br>ביום רביעי, <b>ט"ו כסלו ה'תשפ"ז</b> (25.11.26)<br>בשעה <b>19:30</b><br>באולם הפנסאים, כפר חב"ד</p>
       <div class="gap"></div>
       <p>בשמחה ובטוב לבב נקרא לידידינו ומכרינו<br>לשמוח עמנו יחדיו,<br>ובשמחתכם אי"ה נשמח גם אנו</p>
@@ -268,7 +280,10 @@ footer b{color:var(--gold-light)}
     </article>
   </div>
 
-  <section class="side paper" aria-label="פרטי האירוע ואישור הגעה">
+  <a class="cue" href="#details">פרטים, ניווט ואישור הגעה
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
+
+  <section class="side paper" id="details" aria-label="פרטי האירוע ואישור הגעה">
     <div class="side-head">
       <img class="logo-src" alt="">
       <div>
@@ -329,7 +344,11 @@ footer b{color:var(--gold-light)}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16.5 9.5"/></svg>
         <p class="big" id="done-title">תודה רבה!</p>
         <p id="done-text">קיבלנו את התשובה. נתראה בשמחות.</p>
-        <button class="ics" id="again" type="button">לעדכן את התשובה</button>
+        <div class="done-actions" id="done-actions">
+          <a class="btn" id="gcal2" target="_blank" rel="noopener">הוספה ליומן</a>
+          <a class="btn ghost" id="waze2" target="_blank" rel="noopener">ניווט ב-Waze</a>
+        </div>
+        <button class="ics" id="again" type="button" style="margin-top:12px">לעדכן את התשובה</button>
       </div>
     </div>
   </section>
@@ -365,6 +384,8 @@ footer b{color:var(--gold-light)}
   document.getElementById("gcal").href = "https://calendar.google.com/calendar/render?action=TEMPLATE" +
     "&text=" + encodeURIComponent(EVENT.title) + "&dates=" + EVENT.startUTC + "/" + EVENT.endUTC +
     "&location=" + encodeURIComponent(EVENT.place) + "&details=" + encodeURIComponent("ט\"ו כסלו ה'תשפ\"ז · נשמח לראותכם");
+  document.getElementById("waze2").href = EVENT.wazeUrl;
+  document.getElementById("gcal2").href = document.getElementById("gcal").href;
   document.getElementById("ics").addEventListener("click", function(){
     var ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Hazan//BarMitzvah//HE","BEGIN:VEVENT",
       "UID:ari-hazan-barmitzvah-20261125","DTSTAMP:20261024T000000Z","DTSTART:"+EVENT.startUTC,"DTEND:"+EVENT.endUTC,
@@ -398,16 +419,25 @@ footer b{color:var(--gold-light)}
     if (audio) { audio.play().catch(function(){}); sb.hidden = false; }
     gate.classList.add("opening");
     setTimeout(function(){ gate.classList.add("gone"); body.classList.remove("locked"); body.classList.add("ready"); }, reduce ? 0 : 1250);
-    setTimeout(function(){ gate.remove(); watchBar(); }, reduce ? 50 : 2400);
+    setTimeout(function(){ gate.remove(); watchBar(); var cd = document.getElementById("card"); if (cd) cd.focus({preventScroll:true}); }, reduce ? 50 : 2400);
   }
   document.getElementById("open").addEventListener("click", openGate);
 
-  // sticky RSVP bar: shown on phones until the form is on screen or answered
+  // Floating RSVP button (phones): appears only after the guest has read past the card,
+  // so it never covers the invitation text, and hides once the form is on screen.
   function watchBar(){
-    var bar = document.getElementById("bar"), rs = document.getElementById("rsvp");
-    if (store("ari-rsvp")) return;
-    if (!("IntersectionObserver" in window)) { bar.classList.remove("hide"); return; }
-    new IntersectionObserver(function(es){ bar.classList.toggle("hide", es[0].isIntersecting || !!store("ari-rsvp")); }, {threshold:.15}).observe(rs);
+    var bar = document.getElementById("bar"), card = document.getElementById("card"), rs = document.getElementById("rsvp");
+    var ticking = false;
+    function update(){
+      ticking = false;
+      var answered = !!store("ari-rsvp");
+      var cardGone = card.getBoundingClientRect().bottom < 60;
+      var formNear = rs.getBoundingClientRect().top < window.innerHeight * 0.9;
+      bar.classList.toggle("hide", answered || !cardGone || formNear);
+    }
+    window.addEventListener("scroll", function(){ if (!ticking) { ticking = true; requestAnimationFrame(update); } }, {passive:true});
+    window.addEventListener("resize", update);
+    update();
   }
 
   // RSVP form
